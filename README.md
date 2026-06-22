@@ -1,5 +1,13 @@
 # PipelineIQ - Mini CRM Opportunity Tracker
 
+### 🚀 Live Application
+**Live URL:** [Paste your deployed Vercel URL here]
+
+### 🔑 Test Credentials (Evaluator Login)
+**Email:** test@example.com
+**Password:** password123
+
+---
 ## Project Overview
 PipelineIQ is a secure, full-stack MERN web application designed to act as a shared CRM-style sales opportunity pipeline. It serves as an internal tool for a startup, sales team, or SME to effortlessly track leads, follow-ups, and deal stages. 
 
