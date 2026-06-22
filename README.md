@@ -1,11 +1,11 @@
 # PipelineIQ - Mini CRM Opportunity Tracker
 
 ### 🚀 Live Application
-**Live URL:** [Paste your deployed Vercel URL here]
+**Live URL:** https://glistening-moonbeam-19bcb0.netlify.app
 
 ### 🔑 Test Credentials (Evaluator Login)
-**Email:** test@example.com
-**Password:** password123
+**Email:** test@pipelineiq.com
+**Password:** test123
 
 ---
 ## Project Overview
