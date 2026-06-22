@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { Building2, User, Mail, Phone } from 'lucide-react';
 
 const OpportunityForm = ({ formData, setFormData, onSubmit, isLoading, isEditing = false }) => {
   const handleChange = (e) => {
