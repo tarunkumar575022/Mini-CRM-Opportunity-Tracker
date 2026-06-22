@@ -1,102 +1,88 @@
-# PipelineIQ — Mini CRM
+# PipelineIQ - Mini CRM Opportunity Tracker
 
-PipelineIQ is a premium, production-ready full-stack MERN application designed for tracking CRM opportunities. It provides a beautiful interface with Kanban and List views, robust filtering, and strict ownership validation on the backend.
+## Project Overview
+PipelineIQ is a secure, full-stack MERN web application designed to act as a shared CRM-style sales opportunity pipeline. It serves as an internal tool for a startup, sales team, or SME to effortlessly track leads, follow-ups, and deal stages. 
 
-## Live Demo
-*Link to live demo will be added here after deployment*
+The application implements a robust authentication and authorization system. While the entire team can view the shared pipeline to avoid duplicating efforts, strict backend ownership validations ensure that users can only edit or delete the opportunities they personally created. 
 
-## Features
-- **Premium UI/UX:** Built with Tailwind CSS, featuring micro-animations, glassmorphism elements, and a responsive design.
-- **Authentication:** JWT-based authentication with auto-logout on expiration.
-- **Kanban Board & List View:** Manage opportunities via a drag-and-drop Kanban board or a detailed list view.
-- **Strict Security:** Backend ownership validation ensures users can only edit or delete their own opportunities. Never accepts `user_id` from the frontend body.
-- **Filtering & Searching:** Instantly filter opportunities by stage, priority, and search by company name.
-- **Dashboard Summaries:** Quick metrics showing total pipeline value, won deals, and follow-ups.
+## Tech Stack Used
+**Frontend:**
+- React.js (Vite)
+- Tailwind CSS
+- Axios (API Client)
+- React Router DOM
+- Lucide React (Icons)
 
-## Tech Stack
-- **Frontend:** React.js, Vite, Tailwind CSS, Axios, react-router-dom, react-hot-toast, lucide-react, date-fns.
-- **Backend:** Node.js, Express.js, MongoDB, Mongoose, JWT, bcryptjs, express-validator.
-- **Database:** MongoDB Atlas.
+**Backend:**
+- Node.js & Express.js
+- MongoDB & Mongoose
+- JSON Web Token (JWT) for Authentication
+- bcryptjs for Password Hashing
+- dotenv for Environment Variables
 
-## Architecture Overview
-The application follows a standard client-server architecture:
-- **Client (Frontend):** A Single Page Application (SPA) built with React. Uses Context API for state management (Auth) and Axios for API communication. Implements request interceptors for JWT injection and response interceptors for global 401 handling.
-- **Server (Backend):** A RESTful API built with Express.js. Implements robust middleware for authentication, request validation, and central error handling. MongoDB is used for persistent storage.
+## Environment Variables Required
+To run this project, you will need to create `.env` files in both the frontend and backend directories.
 
-## Local Setup
+### Backend (`backend/.env`)
+```
+PORT=5000
+MONGO_URI=your_mongodb_connection_string
+JWT_SECRET=your_super_secret_jwt_key
+```
 
-1. **Clone the repository**
-   ```bash
-   git clone <repository-url>
-   cd PipelineIQ
-   ```
+### Frontend (`frontend/.env`)
+```
+VITE_API_URL=http://localhost:5000/api
+```
 
-2. **Backend Setup**
-   ```bash
-   cd backend
-   npm install
-   cp .env.example .env
-   # Add your MongoDB URI to the .env file
-   node src/seed.js # Optional: Seed database with test users and data
-   npm run dev
-   ```
+## Backend Setup Instructions
+1. Navigate to the backend directory: `cd backend`
+2. Install the dependencies: `npm install`
+3. Create a `.env` file and add the required environment variables.
+4. Start the development server: `npm run dev`
+*(The backend will run on `http://localhost:5000`)*
 
-3. **Frontend Setup**
-   ```bash
-   cd frontend
-   npm install
-   cp .env.example .env
-   npm run dev
-   ```
+## Frontend Setup Instructions
+1. Navigate to the frontend directory: `cd frontend`
+2. Install the dependencies: `npm install`
+3. Create a `.env` file and add the `VITE_API_URL`.
+4. Start the development server: `npm run dev`
+*(The frontend will run on `http://localhost:5173`)*
 
-## Test Credentials
-- User 1: `test@pipelineiq.com` / `test123`
-- User 2: `demo@pipelineiq.com` / `demo123`
+## API Details
+All endpoints are prefixed with `/api`.
 
-## API Documentation
+### Authentication
+- `POST /auth/register` - Register a new user (Name, Email, Password).
+- `POST /auth/login` - Authenticate a user and return a JWT token.
+- `GET /auth/me` - Get the currently logged-in user profile.
 
-### Auth Routes
-- `POST /api/auth/register`: Register a new user
-- `POST /api/auth/login`: Authenticate user & get token
-- `GET /api/auth/me`: Get current user profile (Protected)
+### Opportunities (Protected Routes - Requires Bearer Token)
+- `GET /opportunities` - Get all opportunities in the shared pipeline.
+- `POST /opportunities` - Create a new opportunity. The owner is securely derived from the JWT.
+- `GET /opportunities/:id` - Get details of a specific opportunity.
+- `PUT /opportunities/:id` - Update an opportunity (Owner restricted).
+- `DELETE /opportunities/:id` - Delete an opportunity (Owner restricted).
 
-### Opportunity Routes (All Protected)
-- `GET /api/opportunities`: Get all opportunities (supports query params: `stage`, `priority`, `search`, `sortBy`, `order`)
-- `POST /api/opportunities`: Create a new opportunity (owner implicitly set from JWT)
-- `GET /api/opportunities/:id`: Get a specific opportunity by ID
-- `PUT /api/opportunities/:id`: Update an opportunity (ownership validated)
-- `DELETE /api/opportunities/:id`: Delete an opportunity (ownership validated)
+## Deployment Steps
+### Backend (Render / Railway)
+1. Push the repository to GitHub.
+2. Create a new Web Service on Render.
+3. Connect the GitHub repository and set the Root Directory to `backend`.
+4. Set Build Command: `npm install`
+5. Set Start Command: `npm start` (or `node src/server.js`).
+6. Add the environment variables (`MONGO_URI`, `JWT_SECRET`, `PORT`).
+7. Deploy and copy the live API URL.
 
-## Security Implementation
-- **JWT:** Extracted strictly from the `Authorization: Bearer <token>` header.
-- **Passwords:** Hashed using `bcrypt` before storing in MongoDB.
-- **Ownership Validation:** The backend explicitly checks `if (opportunity.owner.toString() !== req.user._id.toString())` before allowing updates or deletes.
-- **Input Sanitization:** Uses `express-validator` to ensure required fields are present and correctly formatted. The backend strips `owner` or `user_id` fields from request bodies to prevent manipulation.
-- **Secrets:** Environment variables used for all sensitive configuration.
+### Frontend (Vercel / Netlify)
+1. Create a new project on Vercel and import the GitHub repository.
+2. Set the Root Directory to `frontend`.
+3. Vercel will automatically detect the Vite framework (`npm run build`).
+4. Add the `VITE_API_URL` environment variable using the live URL from the deployed backend.
+5. Deploy the application.
 
-## Known Limitations
-- Pagination is implemented in the backend API but the frontend currently fetches all opportunities for seamless Kanban board operation. In a massive scale application, the Kanban board would need virtualization or lazy loading per column.
-- Real-time updates (WebSockets) are not currently implemented.
-
-## Deployment Guide
-
-### Database (MongoDB Atlas)
-1. Create a free M0 cluster on MongoDB Atlas.
-2. Obtain the connection string and replace `<username>` and `<password>`.
-
-### Backend (Render)
-1. Connect your GitHub repository to Render.
-2. Select the `backend` folder as the Root Directory.
-3. Use `npm install` as the Build Command and `node server.js` as the Start Command.
-4. Add Environment Variables:
-   - `MONGODB_URI`
-   - `JWT_SECRET`
-   - `JWT_EXPIRES_IN=2h`
-   - `NODE_ENV=production`
-
-### Frontend (Vercel)
-1. Import your GitHub repository to Vercel.
-2. Select the `frontend` folder as the Root Directory.
-3. Vercel will automatically detect Vite and configure the build settings.
-4. Add Environment Variables:
-   - `VITE_API_URL=https://your-render-url.onrender.com/api` (Replace with actual backend URL)
+## Known Limitations or Pending Improvements
+- **Pagination & Infinite Scroll:** While backend limits/skips can be configured, adding infinite scroll to the frontend UI would improve performance for massive datasets.
+- **Advanced Filtering:** Adding multi-select filters (e.g., filtering for both "New" and "Contacted" stages simultaneously) could enhance the user experience.
+- **Admin Roles:** Implementing a Super Admin role that can override ownership locks and delete any card in the company pipeline for moderation purposes.
+- **Email Notifications:** Integrating Nodemailer or SendGrid to automatically notify users when their "Next Follow-Up Date" approaches.
